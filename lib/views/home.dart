@@ -1,3 +1,6 @@
+import 'package:chat_app/views/contacts.dart';
+import 'package:chat_app/views/messages.dart';
+import 'package:chat_app/views/settings.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -14,6 +17,14 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: IndexedStack(
+        index: _currentPageIndex,
+        children: const <Widget>[
+          Contacts(),
+          Messages(),
+          Settings(),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentPageIndex,
         onTap: (index) {
@@ -21,15 +32,18 @@ class _HomeState extends State<Home> {
             _currentPageIndex = index;
           });
         },
-        items: const [
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
+            label: 'Contacts',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.messenger),
+            label: 'Messages',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
       ),
