@@ -12,7 +12,6 @@ class ChatUser {
   });
 
   Map<String, String> toMap() => {
-    'id': id,
     'username': username,
     'email': email,
     'password': password,

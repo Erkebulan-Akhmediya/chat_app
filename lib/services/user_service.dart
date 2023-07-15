@@ -8,4 +8,14 @@ class UserService extends ChangeNotifier {
   Future<void> saveUser(ChatUser user) async {
     await _firestore.collection('Users').doc(user.id).set(user.toMap());
   }
+
+  Stream<ChatUser> getUser(String uid) => _firestore.collection('Users')
+    .doc(uid).snapshots().map((snapshot) =>
+      ChatUser(
+        id: uid,
+        username: snapshot['username'],
+        email: snapshot['email'],
+        password: snapshot['password'],
+      ),
+    );
 }

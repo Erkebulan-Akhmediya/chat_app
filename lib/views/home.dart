@@ -1,23 +1,45 @@
-import 'package:chat_app/services/auth_service.dart';
+import 'package:chat_app/views/messages.dart';
+import 'package:chat_app/views/settings.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _HomeState();
+
+}
+
+class _HomeState extends State<Home> {
+  int _currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
+      body: IndexedStack(
+        index: _currentPageIndex,
+        children: const <Widget>[
+          Messages(),
+          Settings(),
+        ],
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Provider.of<AuthService>(context, listen: false).signOut();
-          },
-          child: const Text('Sign Out'),
-        ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentPageIndex,
+        onTap: (index) {
+          setState(() {
+            _currentPageIndex = index;
+          });
+        },
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.messenger),
+            label: 'Messages',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
       ),
     );
   }

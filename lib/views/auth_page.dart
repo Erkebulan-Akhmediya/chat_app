@@ -57,36 +57,48 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
+  void _signUpHandler() async {
+    try {
+      // verify password
+      if (_passwordController.text != _verifyPasswordController.text) {
+        throw FirebaseAuthException(
+          message: 'Password verification failed',
+          code: 'operation-not-allowed',
+        );
+      }
+
+      UserService userService = Provider.of<UserService>(context, listen: false);
+
+      // authenticate user
+      UserCredential userCredential = await Provider
+          .of<AuthService>(context, listen: false)
+          .signUp(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      // save user to db
+      await userService.saveUser(
+        ChatUser(
+          id: userCredential.user!.uid,
+          username: _usernameController.text,
+          email: _emailController.text,
+          password: _passwordController.text,
+        ),
+      );
+
+    } on FirebaseAuthException catch(e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? 'Sign up failed'),
+        ),
+      );
+    }
+  }
+
   Widget _signUpButton() {
     return ElevatedButton(
-      onPressed: () async {
-        try {
-          if (_passwordController.text != _verifyPasswordController.text) {
-            throw FirebaseAuthException(
-              message: 'Password verification failed',
-              code: 'operation-not-allowed',
-            );
-          }
-          UserCredential userCredential = await Provider.of<AuthService>(context, listen: false).signUp(
-            email: _emailController.text,
-            password: _passwordController.text,
-          );
-          await Provider.of<UserService>(context, listen: false).saveUser(
-            ChatUser(
-              id: userCredential.user!.uid,
-              username: _usernameController.text,
-              email: _emailController.text,
-              password: _passwordController.text,
-            ),
-          );
-        } on FirebaseAuthException catch(e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(e.message ?? 'Sign up failed'),
-            ),
-          );
-        }
-      },
+      onPressed: _signUpHandler,
       child: const Text('Sign Up'),
     );
   }
