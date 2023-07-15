@@ -18,4 +18,26 @@ class UserService extends ChangeNotifier {
         password: snapshot['password'],
       ),
     );
+
+  Stream<List<ChatUser>> getAllUsers(String uid) {
+    return _firestore.collection('Users').snapshots().map((snapshot) {
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> documents = snapshot.docs;
+      List<ChatUser> users = [];
+
+      for (QueryDocumentSnapshot<Map<String, dynamic>> document in documents) {
+        Map<String, dynamic> data = document.data();
+        if (document.id != uid) {
+          users.add(
+            ChatUser(
+              id: document.id,
+              username: data['username'],
+              email: data['email'],
+              password: data['password'],
+            ),
+          );
+        }
+      }
+      return users;
+    });
+  }
 }
