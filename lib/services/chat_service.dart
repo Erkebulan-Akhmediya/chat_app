@@ -25,9 +25,30 @@ class ChatService extends ChangeNotifier {
       }
     });
 
-  Future sendMessage(String chatId, Message message) async {
+  Future sendMessage(String chatId, Message message) async =>
     await _chats.doc(chatId).update({
       'messages': FieldValue.arrayUnion([json.encode(message.toMap())]),
+    });
+
+  Stream<List<Chat>?> getAllChats(String uid) {
+    Query query = _chats.where('participantsId', arrayContains: uid);
+    Stream<QuerySnapshot> querySnapshot = query.snapshots();
+    return querySnapshot.map((snapshot) {
+      List<QueryDocumentSnapshot> queryDocumentSnapshotList = snapshot.docs;
+      List<Chat> chats = [];
+
+      if (queryDocumentSnapshotList.isNotEmpty) {
+        for (QueryDocumentSnapshot queryDocumentSnapshot in queryDocumentSnapshotList) {
+          chats.add(Chat(
+            id: queryDocumentSnapshot['id'],
+            participantsId: List<String>.from(queryDocumentSnapshot['participantsId']),
+            messages: List<String>.from(queryDocumentSnapshot['messages']),
+          ));
+        }
+      } else {
+        return null;
+      }
+      return chats;
     });
   }
 }
