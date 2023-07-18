@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Message {
   final String senderId;
   final String receiverId;
@@ -15,13 +17,13 @@ class Message {
     'senderId': senderId,
     'receiverId': receiverId,
     'message': message,
-    'time': time,
+    'time': DateFormat('yyyy-MM-dd HH:mm:ss').format(time),
   };
 
   factory Message.fromMap(Map<String, dynamic> map) => Message(
     senderId: map['senderId'],
     receiverId: map['receiverId'],
     message: map['message'],
-    time: map['time'],
+    time: DateFormat('yyyy-MM-dd HH:mm:ss').parse(map['time']),
   );
 }

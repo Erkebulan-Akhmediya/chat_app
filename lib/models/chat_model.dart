@@ -1,15 +1,16 @@
 class Chat {
-  final List participantsId;
-  final List messages;
+  final String id;
+  final List<String> participantsId;
+  final List<String> messages;
 
   Chat({
+    required this.id,
     required this.participantsId,
     required this.messages,
-  }) {
-    participantsId.sort();
-  }
+  });
 
   Map<String, dynamic> toMap() => {
+    'id': id,
     'participantsId': participantsId,
     'messages': messages,
   };
