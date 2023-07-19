@@ -1,4 +1,5 @@
 import 'package:chat_app/views/all_users.dart';
+import 'package:chat_app/views/contacts.dart';
 import 'package:chat_app/views/messages.dart';
 import 'package:chat_app/views/settings.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +22,13 @@ class _HomeState extends State<Home> {
         index: _currentPageIndex,
         children: const <Widget>[
           AllUsers(),
+          Contacts(),
           Messages(),
           Settings(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: _currentPageIndex,
         onTap: (index) {
           setState(() {
@@ -36,6 +39,10 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
             label: 'All users',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: 'Contacts',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.messenger),
