@@ -19,7 +19,7 @@ class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     String uid = Provider.of<AuthService>(context).currentUser!.uid;
-    List<String> participantsId = [uid,  interlocutor.id];
+    List<String> participantsId = [uid, interlocutor.id];
     participantsId.sort();
     String chatId = participantsId.join('_');
 
