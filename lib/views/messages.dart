@@ -23,35 +23,47 @@ class Messages extends StatelessWidget {
         stream: Provider.of<ChatService>(context).getAllChats(uid),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                List<String> participantsId = snapshot.data![index].participantsId;
-                participantsId.remove(uid);
-                String interlocutorId = participantsId[0];
-                return StreamBuilder<ChatUser>(
-                  stream: Provider.of<UserService>(context).getUser(interlocutorId),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return TextButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => ChatPage(
-                                interlocutor: snapshot.data!,
+            if (snapshot.data!.isNotEmpty) {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  List<String> participantsId = snapshot.data![index].participantsId;
+                  participantsId.remove(uid);
+                  String interlocutorId = participantsId[0];
+                  return StreamBuilder<ChatUser>(
+                    stream: Provider.of<UserService>(context).getUser(interlocutorId),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ChatPage(
+                                  interlocutor: snapshot.data!,
+                                ),
                               ),
+                            );
+                          },
+                          child: Text(
+                            snapshot.data!.username,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20.0,
                             ),
-                          );
-                        },
-                        child: Text(snapshot.data!.username),
-                      );
-                    } else {
-                      return const CircularProgressIndicator();
-                    }
-                  },
-                );
-              },
-            );
+                          ),
+                        );
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    },
+                  );
+                },
+              );
+            } else {
+              return const Center(
+                child: Text('No messages yet'),
+              );
+            }
           } else {
             return const CircularProgressIndicator();
           }

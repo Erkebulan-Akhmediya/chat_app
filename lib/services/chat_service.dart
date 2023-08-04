@@ -30,24 +30,33 @@ class ChatService extends ChangeNotifier {
       'messages': FieldValue.arrayUnion([json.encode(message.toMap())]),
     });
 
-  Stream<List<Chat>?> getAllChats(String uid) {
+  Stream<List<Chat>> getAllChats(String uid) {
     Query query = _chats.where('participantsId', arrayContains: uid);
     Stream<QuerySnapshot> querySnapshot = query.snapshots();
     return querySnapshot.map((snapshot) {
       List<QueryDocumentSnapshot> queryDocumentSnapshotList = snapshot.docs;
       List<Chat> chats = [];
 
-      if (queryDocumentSnapshotList.isNotEmpty) {
-        for (QueryDocumentSnapshot queryDocumentSnapshot in queryDocumentSnapshotList) {
-          chats.add(Chat(
-            id: queryDocumentSnapshot['id'],
-            participantsId: List<String>.from(queryDocumentSnapshot['participantsId']),
-            messages: List<String>.from(queryDocumentSnapshot['messages']),
-          ));
-        }
-      } else {
-        return null;
+      // if (queryDocumentSnapshotList.isNotEmpty) {
+      //   for (QueryDocumentSnapshot queryDocumentSnapshot in queryDocumentSnapshotList) {
+      //     chats.add(Chat(
+      //       id: queryDocumentSnapshot['id'],
+      //       participantsId: List<String>.from(queryDocumentSnapshot['participantsId']),
+      //       messages: List<String>.from(queryDocumentSnapshot['messages']),
+      //     ));
+      //   }
+      // } else {
+      //   return null;
+      // }
+
+      for (QueryDocumentSnapshot queryDocumentSnapshot in queryDocumentSnapshotList) {
+        chats.add(Chat(
+          id: queryDocumentSnapshot['id'],
+          participantsId: List<String>.from(queryDocumentSnapshot['participantsId']),
+          messages: List<String>.from(queryDocumentSnapshot['messages']),
+        ));
       }
+
       return chats;
     });
   }

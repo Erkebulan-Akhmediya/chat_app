@@ -54,8 +54,15 @@ class ChatPage extends StatelessWidget {
                       Message message = Message.fromMap(
                         json.decode(snapshot.data!.messages[index]),
                       );
-                      return ListTile(
-                        title: Text(message.message),
+                      return Container(
+                        alignment: uid == message.senderId ? Alignment.topRight : Alignment.topLeft,
+                        margin: const EdgeInsets.all(20.0),
+                        child: Text(
+                          message.message,
+                          style: const TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
                       );
                     },
                   ),

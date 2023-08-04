@@ -15,34 +15,36 @@ class AllUsers extends StatelessWidget {
       appBar: AppBar(
         title: const Text('All Users'),
       ),
-      body: Consumer<UserService>(
-        builder: (context, userService, child) {
-          return StreamBuilder<List<ChatUser>>(
-            stream: Provider.of<UserService>(context).getAllUsers(uid),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    return TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => ChatPage(
-                              interlocutor: snapshot.data![index],
-                            ),
+      body: StreamBuilder<List<ChatUser>>(
+        stream: Provider.of<UserService>(context).getAllUsers(uid),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data!.isNotEmpty) {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  return TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ChatPage(
+                            interlocutor: snapshot.data![index],
                           ),
-                        );
-                      },
-                      child: Text(snapshot.data![index].username),
-                    );
-                  },
-                );
-              } else {
-                return const CircularProgressIndicator();
-              }
-            },
-          );
+                        ),
+                      );
+                    },
+                    child: Text(snapshot.data![index].username),
+                  );
+                },
+              );
+            } else {
+              return const Center(
+                child: Text('No users yet'),
+              );
+            }
+          } else {
+            return const CircularProgressIndicator();
+          }
         },
       ),
     );
