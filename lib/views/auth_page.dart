@@ -22,37 +22,59 @@ class _AuthPageState extends State<AuthPage> {
   final TextEditingController _verifyPasswordController = TextEditingController();
 
   Widget _username() {
-    return TextField(
-      controller: _usernameController,
-      decoration: const InputDecoration(
-        labelText: 'Username',
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20.0),
+      child: TextField(
+        controller: _usernameController,
+        decoration: const InputDecoration(
+          prefixIcon: Icon(Icons.person),
+          labelText: 'Username',
+          border: OutlineInputBorder(),
+        ),
       ),
     );
   }
 
   Widget _email() {
-    return TextField(
-      controller: _emailController,
-      decoration: const InputDecoration(
-        labelText: 'Email Address',
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20.0),
+      child: TextField(
+        controller: _emailController,
+        decoration: const InputDecoration(
+          prefixIcon: Icon(Icons.mail),
+          labelText: 'Email Address',
+          border: OutlineInputBorder(),
+        ),
       ),
     );
   }
 
   Widget _password() {
-    return TextField(
-      controller: _passwordController,
-      decoration: const InputDecoration(
-        labelText: 'Password',
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20.0),
+      child: TextField(
+        obscureText: true,
+        controller: _passwordController,
+        decoration: const InputDecoration(
+          prefixIcon: Icon(Icons.password),
+          labelText: 'Password',
+          border: OutlineInputBorder(),
+        ),
       ),
     );
   }
 
   Widget _verifyPassword() {
-    return TextField(
-      controller: _verifyPasswordController,
-      decoration: const InputDecoration(
-        labelText: 'Verify Password',
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20.0),
+      child: TextField(
+        obscureText: true,
+        controller: _verifyPasswordController,
+        decoration: const InputDecoration(
+          prefixIcon: Icon(Icons.password_outlined),
+          labelText: 'Verify Password',
+          border: OutlineInputBorder(),
+        ),
       ),
     );
   }
@@ -97,21 +119,39 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Widget _signUpButton() {
-    return ElevatedButton(
-      onPressed: _signUpHandler,
-      child: const Text('Sign Up'),
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: 50.0,
+      child: ElevatedButton(
+        onPressed: _signUpHandler,
+        child: const Text(
+          'Sign Up',
+          style: TextStyle(
+            fontSize: 20.0,
+          ),
+        ),
+      ),
     );
   }
 
   Widget _signInButton() {
-    return ElevatedButton(
-      onPressed: () async {
-        await Provider.of<AuthService>(context, listen: false).signIn(
-          email: _emailController.text,
-          password: _passwordController.text,
-        );
-      },
-      child: const Text('Sign In'),
+    return SizedBox(
+      height: 50.0,
+      width: MediaQuery.of(context).size.width,
+      child: ElevatedButton(
+        onPressed: () async {
+          await Provider.of<AuthService>(context, listen: false).signIn(
+            email: _emailController.text,
+            password: _passwordController.text,
+          );
+        },
+        child: const Text(
+          'Sign In',
+          style: TextStyle(
+            fontSize: 20.0,
+          ),
+        ),
+      ),
     );
   }
 
@@ -140,15 +180,28 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          _signUp ? _username() : Container(),
-          _email(),
-          _password(),
-          _signUp ? _verifyPassword() : Container(),
-          _signUp ? _signUpButton() : _signInButton(),
-          _signUp ? _alreadyHaveAccount() : _dontHaveAccount(),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: ListView(
+          children: <Widget>[
+            const Icon(Icons.lock, size: 60.0,),
+            Container(
+              margin: const EdgeInsets.only(bottom: 20.0, top: 10.0),
+              child: Text(
+                _signUp ? 'Sign Up' : 'SignIn',
+                style: const TextStyle(
+                  fontSize: 20.0,
+                ),
+              ),
+            ),
+            _signUp ? _username() : Container(),
+            _email(),
+            _password(),
+            _signUp ? _verifyPassword() : Container(),
+            _signUp ? _signUpButton() : _signInButton(),
+            _signUp ? _alreadyHaveAccount() : _dontHaveAccount(),
+          ],
+        ),
       ),
     );
   }

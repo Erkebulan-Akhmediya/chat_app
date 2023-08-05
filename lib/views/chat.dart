@@ -5,6 +5,7 @@ import 'package:chat_app/models/message_model.dart';
 import 'package:chat_app/models/user_model.dart';
 import 'package:chat_app/services/auth_service.dart';
 import 'package:chat_app/services/chat_service.dart';
+import 'package:chat_app/views/message_box.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -54,46 +55,48 @@ class ChatPage extends StatelessWidget {
                       Message message = Message.fromMap(
                         json.decode(snapshot.data!.messages[index]),
                       );
+                      Alignment alignment = uid == message.senderId ? Alignment.topRight : Alignment.topLeft;
                       return Container(
-                        alignment: uid == message.senderId ? Alignment.topRight : Alignment.topLeft,
-                        margin: const EdgeInsets.all(20.0),
-                        child: Text(
-                          message.message,
-                          style: const TextStyle(
-                            fontSize: 20,
-                          ),
+                        alignment: alignment,
+                        child: MessageBox(
+                          alignment: alignment,
+                          text: message.message,
+                          date: message.time,
                         ),
                       );
                     },
                   ),
                 ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        controller: _messageController,
-                        decoration: const InputDecoration(
-                          labelText: 'Message',
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: TextField(
+                          controller: _messageController,
+                          decoration: const InputDecoration(
+                            labelText: 'Message',
+                          ),
                         ),
                       ),
-                    ),
-                    IconButton(
-                      onPressed: () async {
-                        await Provider.of<ChatService>(context, listen: false)
-                          .sendMessage(
-                            chatId,
-                            Message(
-                              senderId: uid,
-                              receiverId: interlocutor.id,
-                              message: _messageController.text,
-                              time: DateTime.now(),
-                            ),
-                          );
-                        _messageController.clear();
-                      },
-                      icon: const Icon(Icons.send),
-                    ),
-                  ],
+                      IconButton(
+                        onPressed: () async {
+                          await Provider.of<ChatService>(context, listen: false)
+                            .sendMessage(
+                              chatId,
+                              Message(
+                                senderId: uid,
+                                receiverId: interlocutor.id,
+                                message: _messageController.text,
+                                time: DateTime.now(),
+                              ),
+                            );
+                          _messageController.clear();
+                        },
+                        icon: const Icon(Icons.send),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             );
